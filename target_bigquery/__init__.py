@@ -44,6 +44,8 @@ def main():
     truncate = False
     if config.get("replication_method", "append").lower() == "truncate":
         truncate = True
+        
+    processhandler = config.get("processhandler", flags.processhandler)
 
     table_prefix = config.get("table_prefix", "")
     table_suffix = config.get("table_suffix", "")
@@ -64,11 +66,11 @@ def main():
             BookmarksStatePartialLoadJobProcessHandler
 
         ph = None
-        if flags.processhandler == "load-job":
+        if processhandler == "load-job":
             ph = LoadJobProcessHandler
-        elif flags.processhandler == "partial-load-job":
+        elif processhandler == "partial-load-job":
             ph = PartialLoadJobProcessHandler
-        elif flags.processhandler == "bookmarks-partial-load-job":
+        elif processhandler == "bookmarks-partial-load-job":
             ph = BookmarksStatePartialLoadJobProcessHandler
         else:
             raise Exception("Unknown process handler.")
