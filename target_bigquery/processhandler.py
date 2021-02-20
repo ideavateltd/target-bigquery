@@ -192,6 +192,9 @@ class LoadJobProcessHandler(BaseProcessHandler):
         schema = build_schema(table_schema, key_properties=key_props, add_metadata=metadata_columns, force_fields=force_fields)
         load_config = LoadJobConfig()
         load_config.ignore_unknown_values = True
+        load_config.schema_update_options = [
+            bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION
+        ]
         load_config.schema = schema
         if partition_field:
             load_config.time_partitioning = bigquery.table.TimePartitioning(
@@ -298,3 +301,29 @@ class BookmarksStatePartialLoadJobProcessHandler(PartialLoadJobProcessHandler):
             self.EMITTED_STATE["bookmarks"][stream] = self.STATE["bookmarks"][stream]
 
             yield self.EMITTED_STATE
+
+class DirectLoadJobProcessHandler(LoadJobProcessHandler):
+
+    def __init__(self, logger, **kwargs):
+        super(DirectLoadJobProcessHandler, self).__init__(logger, **kwargs)
+
+    def on_stream_end(self):
+        rows = {s: self.rows[s] for s in self.rows.keys() if self.rows[s].tell() > 0}
+        if len(rows) == 0:
+            yield self.STATE
+            return
+
+        for stream in rows.keys():
+            job = self._load_to_bq(
+                client=self.client,
+                dataset=self.dataset,
+                table_name=self.tables[stream],
+                table_schema=self.schemas[stream],
+                table_config=self.table_configs.get(stream, {}),
+                key_props=self.key_properties[stream],
+                metadata_columns=self.add_metadata_columns,
+                truncate=self.truncate,
+                rows=self.rows[stream]
+            )
+
+        yield self.STATE

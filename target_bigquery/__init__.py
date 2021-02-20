@@ -63,7 +63,7 @@ def main():
 
     try:
         from target_bigquery.processhandler import LoadJobProcessHandler, PartialLoadJobProcessHandler, \
-            BookmarksStatePartialLoadJobProcessHandler
+            BookmarksStatePartialLoadJobProcessHandler, DirectLoadJobProcessHandler
 
         ph = None
         if processhandler == "load-job":
@@ -72,6 +72,8 @@ def main():
             ph = PartialLoadJobProcessHandler
         elif processhandler == "bookmarks-partial-load-job":
             ph = BookmarksStatePartialLoadJobProcessHandler
+        elif processhandler == "direct-load-job":
+            ph = DirectLoadJobProcessHandler
         else:
             raise Exception("Unknown process handler.")
 
