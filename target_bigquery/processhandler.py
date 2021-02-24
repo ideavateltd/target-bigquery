@@ -107,6 +107,7 @@ class LoadJobProcessHandler(BaseProcessHandler):
             msg.record["_sdc_extracted_at"] = msg.time_extracted.isoformat() \
                 if msg.time_extracted else datetime.utcnow().isoformat()
             msg.record["_sdc_received_at"] = datetime.utcnow().isoformat()
+            msg.record["_sdc_batched_at"] = datetime.utcnow().isoformat()
             msg.record["_sdc_sequence"] = int(time.time_ns())
 
 
