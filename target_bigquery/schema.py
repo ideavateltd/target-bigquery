@@ -152,6 +152,16 @@ def define_schema(field, name, required_fields=None):
     if field_type == "anyOf":
         props = field["anyOf"]
 
+        # special case where anyOf represents a nullable field
+        if len(props) == 2:
+            prop_type1, _ = get_type(props[0])
+            prop_type2, _ = get_type(props[1])
+
+            if prop_type1 == "null":
+                return define_schema(props[1], name, required_fields)
+            elif prop_type2 == "null":
+                return define_schema(props[0], name, required_fields)
+
         schema_type = "RECORD"
         schema_fields = merge_anyof(props)
 
