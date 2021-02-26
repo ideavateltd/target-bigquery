@@ -73,7 +73,5 @@ class TestSimpleStream(unittestcore.BaseUnitTest):
 
         schema = build_schema(msg.schema, key_properties=msg.key_properties, add_metadata=True)
 
-        print(schema)
-
         self.assertTrue(True)
 
