@@ -156,14 +156,13 @@ def define_schema(field, name, required_fields=None):
         schema_fields = merge_anyof(props)
 
         field_types = set()
-        # select first non-null property
+        # select non-null properties
         for prop in props:
             prop_type, _ = get_type(prop)
             if not prop_type:
                 continue
 
-            if field_type == "anyOf" and prop_type:
-                field_types.add(prop_type)
+            field_types.add(prop_type)
 
         schema_mode = None
         if "array" in field_types:
