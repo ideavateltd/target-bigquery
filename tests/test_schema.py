@@ -75,3 +75,11 @@ class TestSimpleStream(unittestcore.BaseUnitTest):
 
         self.assertTrue(True)
 
+    def test_anyof_object(self):
+        schema = '{ "type": "SCHEMA", "stream": "anyof_object", "schema": { "properties": { "id": { "type": [ "null", "string" ] }, "test1": { "anyOf": [ { "type": "null" }, { "type": "object", "properties": { "foo": { "type": "string" } } } ] } } }, "key_properties": [ "id" ], "bookmark_properties": [] }'
+
+        msg = singer.parse_message(schema)
+
+        schema = build_schema(msg.schema, key_properties=msg.key_properties, add_metadata=True)
+
+        self.assertTrue(True)
