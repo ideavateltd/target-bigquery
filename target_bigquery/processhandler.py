@@ -215,7 +215,7 @@ class LoadJobProcessHandler(BaseProcessHandler):
             logger.info(f"Appending to {table_name}")
             load_config.write_disposition = WriteDisposition.WRITE_APPEND
 
-        logger.info("loading {} to BigQuery".format(table_name))
+        logger.info("loading {} to BigQuery with job config: {}".format(table_name, load_config))
 
         load_job = None
         try:
